@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Digital Heist</title>
+
+<style>
+:root{
+ --bg:#020617;
+ --panel:#0f172a;
+ --neon:#38bdf8;
+ --green:#22c55e;
+ --red:#ef4444;
+ --yellow:#facc15;
+}
+
+/* ===== BASE ===== */
+body{
+ background:radial-gradient(circle at top,#020617,#000);
+ color:#fff;
+ font-family:Segoe UI,Arial;
+ padding:20px;
+ line-height:1.6;
+}
+
+h1{
+ text-align:center;
+ font-size:42px;
+ letter-spacing:3px;
+ color:var(--neon);
+ text-shadow:0 0 25px var(--neon);
+}
+
+h2{color:var(--neon)}
+h3{color:#e5e7eb}
+
+h1,h2,h3,p,label{
+ letter-spacing:.3px;
+}
+
+/* ===== SECTIONS ===== */
+section{
+ background:linear-gradient(145deg, rgba(15,23,42,.85), rgba(2,6,23,.95));
+ backdrop-filter: blur(12px);
+ padding:26px;
+ margin-bottom:32px;
+ border-radius:22px;
+ border:1px solid rgba(56,189,248,.18);
+ box-shadow:
+  0 20px 40px rgba(0,0,0,.6),
+  inset 0 0 0 1px rgba(255,255,255,.03);
+ transition:transform .3s ease, box-shadow .3s ease;
+}
+
+section:hover{
+ transform:translateY(-3px);
+ box-shadow:
+  0 25px 60px rgba(0,0,0,.75),
+  0 0 30px rgba(56,189,248,.25);
+}
+
+/* ===== BOXES ===== */
+.box{
+ border-radius:18px;
+ padding:16px 18px;
+ background:linear-gradient(160deg,#020617,#020617);
+ border:1px solid rgba(148,163,184,.25);
+ box-shadow:
+  0 8px 25px rgba(0,0,0,.6),
+  inset 0 0 0 1px rgba(255,255,255,.02);
+ transition:all .35s ease;
+}
+
+.box:hover{
+ transform:translateY(-4px) scale(1.015);
+ box-shadow:
+  0 18px 45px rgba(0,0,0,.8),
+  0 0 25px rgba(56,189,248,.25);
+}
+
+.attack{
+ border-left:6px solid var(--red);
+ background:linear-gradient(145deg,rgba(252, 17, 17, 0.438),rgba(2,6,23,.95));
+}
+
+.defence{
+ border-left:6px solid var(--green);
+ background:linear-gradient(145deg,rgba(20, 209, 10, 0.911),rgba(2,6,23,.95));
+}
+
+.locked{pointer-events:none;opacity:.6}
+.hint{color:var(--yellow);font-weight:bold}
+
+/* ===== INPUTS & DROPDOWNS ===== */
+input,select{
+ appearance:none;
+ background:linear-gradient(145deg,#f8fafc,#e2e8f0);
+ color:#b9bdcc;
+ padding:12px 40px 12px 14px;
+ border-radius:12px;
+ border:1px solid rgba(56,189,248,.6);
+ font-size:15px;
+ font-weight:600;
+ cursor:pointer;
+}
+
+input{
+ padding:12px 14px;
+}
+
+select{
+ background-image:
+  linear-gradient(45deg,transparent 50%,#f0f2f7 50%),
+  linear-gradient(135deg,#f2f3f9 50%,transparent 50%);
+ background-position:
+  calc(100% - 20px) calc(50% - 4px),
+  calc(100% - 14px) calc(50% - 4px);
+ background-size:6px 6px,6px 6px;
+ background-repeat:no-repeat;
+}
+
+select:hover,input:hover{
+ box-shadow:0 0 12px rgba(56,189,248,.45);
+}
+
+select:focus,input:focus{
+ outline:none;
+ box-shadow:
+  0 0 0 3px rgba(224, 229, 229, 0.35),
+  0 0 25px rgba(221, 228, 231, 0.4);
+}
+
+option{
+ background:#272e38;
+ color:#e6e8f1;
+}
+
+/* ===== BUTTONS ===== */
+button{
+ padding:12px 20px;
+ border-radius:14px;
+ font-size:14px;
+ letter-spacing:.5px;
+ background:linear-gradient(145deg,#f8fafc,#c7d2fe);
+ color:#020617;
+ border:1px solid rgba(56,189,248,.6);
+ box-shadow:0 6px 20px rgba(40, 22, 22, 0.25);
+ transition:all .25s ease;
+}
+
+button:hover{
+ transform:translateY(-2px);
+ box-shadow:
+  0 12px 35px rgba(56,189,248,.6),
+  0 0 20px rgba(56,189,248,.5);
+}
+
+button:active{
+ transform:scale(.97);
+}
+
+/* ===== TIMER ===== */
+/* ===== TIMER HUD (TOP RIGHT) ===== */
+#timerBox{
+ position:fixed;
+ top:20px;
+ right:20px;
+ z-index:1000;
+
+ padding:14px 18px;
+ min-width:160px;
+
+ background:linear-gradient(145deg,#020617,#020617);
+ border:1px solid rgba(34,197,94,.55);
+ box-shadow:
+  0 0 25px rgba(34,197,94,.45),
+  inset 0 0 0 1px rgba(255,255,255,.03);
+}
+
+#timer{
+ color:#22c55e;
+ font-size:20px;
+ text-align:center;
+ letter-spacing:2px;
+ text-shadow:
+  0 0 10px rgba(34,197,94,.9),
+  0 0 25px rgba(34,197,94,.6);
+}
+
+/* make buttons compact */
+#timerBox button{
+ margin-top:6px;
+ width:100%;
+ font-size:12px;
+ padding:6px 0;
+}
+ 
+
+
+/* ===== FINAL SUMMARY ===== */
+#finalBox{
+ border:2px solid rgba(34,197,94,.6);
+ animation:fadeInUp .6s ease forwards;
+}
+
+#finalBox h2{
+ text-align:center;
+ font-size:34px;
+ letter-spacing:2px;
+ text-shadow:0 0 30px rgba(34,197,94,.6);
+}
+
+#finalBox .box{
+ font-size:18px;
+ line-height:1.8;
+ box-shadow:
+  0 25px 60px rgba(0,0,0,.85),
+  0 0 35px rgba(34,197,94,.35);
+}
+
+#finalBox .box p{
+ display:flex;
+ justify-content:space-between;
+ gap:10px;
+}
+
+#finalBox span{
+ font-weight:700;
+ color:var(--green);
+}
+
+/* ===== BINGO OVERLAY ===== */
+#bingo{
+ position:fixed;
+ inset:0;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ background:rgba(0,0,0,.85);
+ font-size:90px;
+ font-weight:900;
+ color:var(--green);
+ text-shadow:0 0 40px var(--green);
+ backdrop-filter:blur(6px);
+ animation:pulseGlow 1.2s infinite alternate;
+ z-index:999;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp{
+ from{opacity:0;transform:translateY(25px);}
+ to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes pulseGlow{
+ from{text-shadow:0 0 30px var(--green);}
+ to{text-shadow:0 0 60px var(--green);}
+}
+/* ===== FIX RADIO BUTTON VISIBILITY (ROUND 1) ===== */
+input[type="radio"]{
+ appearance:auto;          /* bring back native radio */
+ accent-color:#38bdf8;     /* neon blue selection */
+ width:16px;
+ height:16px;
+ margin-right:6px;
+ cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="bingo">BINGO 🎉</div>
+
+<div id="timerBox">
+ <div id="timer">00:00:00</div><br>
+ <button onclick="startTimer()">Start</button>
+ <button onclick="resetTimer()">Reset</button>
+</div>
+
+<h1>💻 DIGITAL HEIST</h1>
+
+<section>
+<h2>Select Your Team</h2>
+<select id="teamSelect"></select>
+</section>
+
+<!-- ROUND 1 -->
+<section id="r1">
+<h2>🔐 Round 1 – Crack the Key</h2>
+<p class="hint">
+🔐 <b>How to Play:</b><br>
+• Each team will see a set of <b>logical reasoning questions</b>.<br>
+• Every question has multiple options, and each option carries a <b>letter code in the bracket</b>.<br>
+• Select the option you believe is correct for each question.<br>
+• The letters from your chosen answers will <b>combine to form a word</b>.<br>
+• This formed word is your <b>Password 1</b>.<br>
+• Once submitted, the round gets locked and cannot be changed.
+</p>
+
+<div id="round1Box"></div>
+<button onclick="submitRound1()">Submit Round 1</button>
+<p id="round1Result"></p>
+</section>
+
+<!-- ROUND 2 -->
+<section id="r2">
+<h2>🛡 Round 2 – Firewall Breach</h2>
+<p class="hint">
+🎯 <b>How to Play:</b><br>
+• Each team has a hidden target number (Password 2).<br>
+• Enter a number between <b>1 to 50</b> and click <b>Breach</b>.<br>
+• If your number is <b>lower</b> than the target → system shows <b>“Higher”</b>.<br>
+• If your number is <b>higher</b> than the target → system shows <b>“Lower”</b>.<br>
+• Every guess increases your <b>attempt count</b>.<br>
+• When you hit the exact number, the firewall is breached and attempts are displayed.
+</p>
+
+
+<input type="number" id="guess" min="1" max="50">
+<button onclick="guessNumber()">Breach</button>
+<p id="round2Result"></p>
+</section>
+
+<!-- ROUND 3 -->
+<section id="r3">
+<h2>⚔ Round 3 – Attack & Defend</h2>
+<p class="hint">
+⚔ <b>How to Play:</b><br>
+• Each team can either <b>Attack</b> or <b>Defend</b> strategically.<br>
+• Attacking teams solve the <b>jumbled rhyme</b> shown for the target team.<br>
+• Select which team you want to <b>attack</b> using the dropdown.<br>
+• You <b>are not suppose to defend against the team which you are attacking </b>, as that team wont be attacking you as per the rules.<br>
+• Therefore, you must choose your defence from the <b>remaining two teams</b> only.<br>
+• The <b>Defence Hint</b> helps calculate the defending team using <b>Password 2</b> from Round 2.<br>
+• Correct attack–defence coordination determines success.<br>
+• Once executed, the round is locked and the timer stops.
+</p>
+
+<h3>Jumbled Rhymes to Attack</h3>
+<div id="rhymeBox"></div>
+
+<p class="hint" id="defenceHint"></p>
+
+<label>Attack Team:</label>
+<select id="attackSelect" onchange="updateDefence()"></select><br>
+
+<label>Defend Against:</label>
+<select id="defendSelect"></select><br>
+
+<button onclick="submitRound3()">Execute Move</button>
+<p id="round3Log"></p>
+</section>
+
+<script>
+/* ================= TIMER (UNCHANGED) ================= */
+let startTime, timerInt;
+function startTimer(){
+ startTime=Date.now();
+ timerInt=setInterval(()=>{
+  let d=Date.now()-startTime;
+  let m=Math.floor(d/60000);
+  let s=Math.floor((d%60000)/1000);
+  let ms=Math.floor((d%1000)/10);
+  timer.innerText=
+   String(m).padStart(2,"0")+":"+
+   String(s).padStart(2,"0")+":"+
+   String(ms).padStart(2,"0");
+ },10);
+}
+function resetTimer(){
+ clearInterval(timerInt);
+ timer.innerText="00:00:00";
+}
+let finalPassword1 = "";
+let finalTimeTaken = "";
+
+/* ================= DATA (UNCHANGED) ================= */
+const teams=[
+ {name:"Team 1",word:"STITCH",num:9},
+ {name:"Team 2",word:"BLUE",num:17},
+ {name:"Team 3",word:"CAKE",num:25},
+ {name:"Team 4",word:"SPILL",num:33}
+];
+
+const round1Data={
+ STITCH:[
+  ["12,11,13,12,14,13,....What number should come next?",["15","S"],["10","R"],["13","G"]],
+  ["Opposite of loose?",["Open","O"],["Tight","T"],["Free","F"]],
+  ["Roman numeral of 1?",["One","I"],["Five","V"],["Ten","X"]],
+  ["Which word does NOT belong with the others?",["Book","T"],["Index","N"],["Chapter","M"]],
+  ["Day:Night::Hot:?",["Dry","K"],["Humid","R"],["Cold","C"]],
+  ["Opposite of cold?",["Hot","H"],["Ice","I"],["Wet","W"]]
+ ],
+ BLUE:[
+  ["Facing south,Anil turns left,then left again,then right.Which direction is he facing now?",["North","B"],["East","J"],["West","T"]],
+  ["10,21,43,87,.....",["178","R"],["175","L"],["172","M"]],
+  ["What is the angle between the hands at 4:00",["90 degree","O"],["120 degree","U"],["140 degree","L"]],
+  ["Opposite of down?",["Up","E"],["Low","L"],["Mid","M"]],
+ ],
+ CAKE:[
+  ["Chair,Table,Bed,Fan. Find the odd one out?",["Fan","C"],["Bed","G"],["Chair","U"]],
+  ["You face North.Turn right,then right again.Which direction are you facing now?",["North","H"],["South","A"],["West","E"]],
+  ["Which is the largest? ",["1/2","G"],["0.75","K"],["1/4 ","T"]],
+  ["Deep thinking?",["Infer","I"],["Act","A"],["Eat","E"]],
+ ],
+ SPILL:[
+  ["Chair,Table,Sofa,Carpet",["Chair","T"],["Carpet","S"],["Sofa","J"]],
+  ["5,11,23,47,...",["95","P"],["94","A"],["97","L"]],
+  ["Idea begins with?",["Idea","I"],["Option","O"],["Use","U"]],
+  ["2->6,3->12,4->20 then 5-> ...",["30","L"],["25","P"],["35","K"]],
+  ["A man has 3 Daughters.Each daughter has 1 brother.How many children does the man have?",["3","K"],["4","L"],["6","M"]]
+ ]
+};
+
+const attackRhymes={
+ 1:"Icing on the ____.",
+ 2:"____ the Beans.",
+ 3:"Once in a ____ moon.",
+ 4:"A ____ in time saves nine."
+};
+
+/* ================= INIT (UNCHANGED) ================= */
+teams.forEach((t,i)=>{
+ teamSelect.innerHTML+=`<option value="${i}">${t.name}</option>`;
+});
+teamSelect.onchange=loadAll;
+let attempts=0;
+loadAll();
+
+/* ================= ROUND 1 (UNCHANGED LOGIC) ================= */
+function loadAll(){
+ loadR1();
+ loadR3();
+ round2Result.innerText="";
+ attempts=0;
+}
+
+function loadR1(){
+ round1Box.innerHTML="";
+ let word=teams[teamSelect.value].word;
+ round1Data[word].forEach((q,i)=>{
+  round1Box.innerHTML+=`
+   <div class="box">
+    <b>Q${i+1}:</b> ${q[0]}<br>
+    ${q.slice(1).map(o=>`
+     <input type="radio" name="q${i}" value="${o[1]}">
+     ${o[0]} (${o[1]})
+    `).join("<br>")}
+   </div>`;
+ });
+}
+
+function submitRound1(){
+ let formed="";
+ let word=teams[teamSelect.value].word;
+ round1Data[word].forEach((_,i)=>{
+  let s=document.querySelector(`input[name=q${i}]:checked`);
+  if(s) formed+=s.value;
+ });
+ round1Result.innerHTML=
+  `Formed Answer: <b>${formed}</b><br>
+   Correct Answer: <b>${word}</b>`;
+ if(formed===word){
+  bingo.style.display="flex";
+  setTimeout(()=>bingo.style.display="none",2000);
+  finalPassword1 = formed;
+ }
+ r1.classList.add("locked");
+}
+
+/* ================= ROUND 2 (UNCHANGED LOGIC) ================= */
+function guessNumber(){
+ let t=teams[teamSelect.value];
+ let g=+guess.value;
+ attempts++;
+ if(g<t.num) round2Result.innerText=`Higher | Attempts: ${attempts}`;
+ else if(g>t.num) round2Result.innerText=`Lower | Attempts: ${attempts}`;
+ else{
+  round2Result.innerHTML=
+   `Correct! Password 2 = <b>${t.num}</b><br>
+    Attempts: <b>${attempts}</b>`;
+  r2.classList.add("locked");
+ }
+}
+
+/* ================= ROUND 3 (UNCHANGED LOGIC) ================= */
+function loadR3(){
+ rhymeBox.innerHTML="";
+ Object.keys(attackRhymes).forEach(t=>{
+  rhymeBox.innerHTML+=`
+   <div class="box attack"><b>Team ${t}</b> → ${attackRhymes[t]}</div>`;
+ });
+ attackSelect.innerHTML="";
+ teams.forEach((t,i)=>{
+  if(i!==+teamSelect.value)
+   attackSelect.innerHTML+=`<option value="${i}">${t.name}</option>`;
+ });
+ updateDefence();
+}
+
+function updateDefence(){
+ defendSelect.innerHTML="";
+
+ let me = +teamSelect.value;   // 0-based index
+ let atk = +attackSelect.value;
+
+ // populate defence dropdown (unchanged logic)
+ teams.forEach((t,i)=>{
+  if(i !== me && i !== atk){
+   defendSelect.innerHTML += `<option>${t.name}</option>`;
+  }
+ });
+
+ // DEFENCE HINT PER TEAM (FIXED AS REQUESTED)
+ let hint = "";
+ if(me === 0){
+  hint = "(Password2) ÷ 3 = ?";
+ }
+ else if(me === 1){
+  hint = "(Password2 − 1) ÷ 4 = ?";
+ }
+ else if(me === 2){
+  hint = "(Password2 − 1) ÷ 12 = ?";
+ }
+ else if(me === 3){
+  hint = "(Password2) ÷ 33 = ?";
+ }
+
+ defenceHint.innerText = "Defence Hint: " + hint;
+}
+
+
+function submitRound3(){
+ clearInterval(timerInt);
+ finalTimeTaken = timer.innerText;
+
+ // store final data
+ finalR1.innerText = finalPassword1 || "Not cracked";
+ finalR2.innerText = attempts;
+ finalAttack.innerText = teams[attackSelect.value].name;
+ finalDefend.innerText = defendSelect.value;
+ finalTime.innerText = finalTimeTaken;
+
+ finalBox.style.display = "block";
+
+ round3Log.innerText="Round 3 submitted. Timer stopped.";
+ r3.classList.add("locked");
+}
+
+</script>
+<!-- FINAL RESPONSE BOX -->
+<section id="finalBox" style="display:none;">
+ <h2>📊 Final Mission Summary</h2>
+ <div class="box defence">
+  <p><b>Round 1 – Formed Word:</b> <span id="finalR1"></span></p>
+  <p><b>Round 2 – Attempts Taken:</b> <span id="finalR2"></span></p>
+  <p><b>Round 3 – Attack Team:</b> <span id="finalAttack"></span></p>
+  <p><b>Round 3 – Defend Team:</b> <span id="finalDefend"></span></p>
+  <p><b>Total Time Taken:</b> <span id="finalTime"></span></p>
+ </div>
+</section>
+
+</body>
+</html>
