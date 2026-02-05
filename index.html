@@ -302,15 +302,18 @@ input[type="radio"]{
 <!-- ROUND 1 -->
 <section id="r1">
 <h2>🔐 Round 1 – Crack the Key</h2>
-<p class="hint">
-🔐 <b>How to Play:</b><br>
-• Each team will see a set of <b>logical reasoning questions</b>.<br>
-• Every question has multiple options, and each option carries a <b>letter code in the bracket</b>.<br>
-• Select the option you believe is correct for each question.<br>
-• The letters from your chosen answers will <b>combine to form a word</b>.<br>
-• This formed word is your <b>Password 1</b>.<br>
-• Once submitted, the round gets locked and cannot be changed.
-</p>
+<div class="instructions" style="color:#facc15;">
+  <h3>🔐 How to Play (Round 1 – Crack the Key)</h3>
+  <ul>
+    <li>Each team will see a set of <b>logical reasoning questions</b>.</li>
+    <li>Every question has multiple options, and each option carries a <b>letter code in the bracket</b>.</li>
+    <li>Select the option you believe is correct for each question.</li>
+    <li>The letters from your chosen answers will <b>combine to form a word</b>.</li>
+    <li>This formed word is your <b>Password 1</b>.</li>
+    <li>Once submitted, the round gets <b>locked</b> and cannot be changed.</li>
+  </ul>
+</div>
+
 
 <div id="round1Box"></div>
 <button onclick="submitRound1()">Submit Round 1</button>
@@ -320,17 +323,19 @@ input[type="radio"]{
 <!-- ROUND 2 -->
 <section id="r2">
 <h2>🛡 Round 2 – Firewall Breach</h2>
-<p class="hint">
-🎯 <b>How to Play:</b><br>
-• Each team has a hidden target number (Password 2).<br>
-• Enter a number between <b>1 to 50</b> and click <b>Breach</b>.<br>
-• If your number is <b>lower</b> than the target → system shows <b>“Higher”</b>.<br>
-• If your number is <b>higher</b> than the target → system shows <b>“Lower”</b>.<br>
-• Every guess increases your <b>attempt count</b>.<br>
-• When you hit the exact number, the firewall is breached and attempts are displayed.
-• <b>Ranking</b> will be decided based on the <b>number of attempts</b> (fewer attempts = higher rank).
+<div class="instructions" style="color:#facc15;">
+  <h3>🎯 How to Play (Round 2 – Firewall Breach)</h3>
+  <ul>
+    <li>Each team has a hidden target number (<b>Password 2</b>).</li>
+    <li>Enter a number between <b>1 to 50</b> and click <b>Breach</b>.</li>
+    <li>If your number is <b>lower</b> than the target → system shows <b>“Higher”</b>.</li>
+    <li>If your number is <b>higher</b> than the target → system shows <b>“Lower”</b>.</li>
+    <li>Every guess increases your <b>attempt count</b>.</li>
+    <li>When you hit the exact number, the firewall is <b>breached</b> and attempts are displayed.</li>
+    <li><b>Ranking</b> will be decided based on the <b>number of attempts</b> (fewer attempts = higher rank).</li>
+  </ul>
+</div>
 
-</p>
 
 
 <input type="number" id="guess" min="1" max="50">
