@@ -107,6 +107,18 @@ input,select{
 input{
  padding:12px 14px;
 }
+/* ===== FINAL ROUND 1 RIGHT ALIGN FIX ===== */
+.r1-right{
+ margin-left:auto;
+ max-width:45%;
+ text-align:right;
+ padding-right:10px;
+}
+
+.r1-right span{
+ display:inline-block;
+ min-width:18px;
+}
 
 select{
  background-image:
@@ -316,6 +328,8 @@ input[type="radio"]{
 • If your number is <b>higher</b> than the target → system shows <b>“Lower”</b>.<br>
 • Every guess increases your <b>attempt count</b>.<br>
 • When you hit the exact number, the firewall is breached and attempts are displayed.
+• <b>Ranking</b> will be decided based on the <b>number of attempts</b> (fewer attempts = higher rank).
+
 </p>
 
 
@@ -326,18 +340,50 @@ input[type="radio"]{
 
 <!-- ROUND 3 -->
 <section id="r3">
-<h2>⚔ Round 3 – Attack & Defend</h2>
-<p class="hint">
-⚔ <b>How to Play:</b><br>
-• Each team can either <b>Attack</b> or <b>Defend</b> strategically.<br>
-• Attacking teams solve the <b>jumbled rhyme</b> shown for the target team.<br>
-• Select which team you want to <b>attack</b> using the dropdown.<br>
-• You <b>are not suppose to defend against the team which you are attacking </b>, as that team wont be attacking you as per the rules.<br>
-• Therefore, you must choose your defence from the <b>remaining two teams</b> only.<br>
-• The <b>Defence Hint</b> helps calculate the defending team using <b>Password 2</b> from Round 2.<br>
-• Correct attack–defence coordination determines success.<br>
-• Once executed, the round is locked and the timer stops.
-</p>
+<div class="instructions" style="color:#facc15;">
+  <h3>⚔ How to Play (Round 3 – Attack & Defend)</h3>
+  <ul>
+    <li>
+      First, decide <b>which team to attack</b> by matching your
+      <b>correct Round-1 password</b> with the <b>jumbled rhyme</b>.
+    </li>
+
+    <li>
+      Select the team you want to attack using the
+      <b>Attack Team</b> dropdown.
+    </li>
+
+    <li>
+      You <b>cannot defend against the same team</b> you are attacking,
+      as that team will not attack you.
+    </li>
+
+    <li>
+      Choose your <b>defence</b> from the <b>remaining two teams only</b>.
+    </li>
+
+    <li>
+      Use the <b>Defence Hint</b> to calculate the defending team using
+      <b>Password 2 from Round 2</b>.
+    </li>
+
+    <li>
+      <b>Correct Attack</b> earns 
+      <span style="color:#22c55e;font-weight:700;">65 points</span>.
+    </li>
+
+    <li>
+      <b>Correct Defence</b> earns 
+      <span style="color:#38bdf8;font-weight:700;">35 points</span>.
+    </li>
+
+    <li>
+      Once submitted, the <b>round is locked</b> and the <b>timer stops</b>.
+    </li>
+  </ul>
+</div>
+
+
 
 <h3>Jumbled Rhymes to Attack</h3>
 <div id="rhymeBox"></div>
@@ -376,7 +422,7 @@ function resetTimer(){
 }
 let finalPassword1 = "";
 let finalTimeTaken = "";
-
+let formedWordR1 = "";
 /* ================= DATA (UNCHANGED) ================= */
 const teams=[
  {name:"Team 1",word:"STITCH",num:9},
@@ -463,11 +509,13 @@ function submitRound1(){
  round1Result.innerHTML=
   `Formed Answer: <b>${formed}</b><br>
    Correct Answer: <b>${word}</b>`;
- if(formed===word){
-  bingo.style.display="flex";
-  setTimeout(()=>bingo.style.display="none",2000);
-  finalPassword1 = formed;
- }
+ formedWordR1 = formed;   // ALWAYS store formed word
+
+if(formed === word){
+ bingo.style.display="flex";
+ setTimeout(()=>bingo.style.display="none",2000);
+}
+
  r1.classList.add("locked");
 }
 
@@ -537,8 +585,37 @@ function submitRound3(){
  clearInterval(timerInt);
  finalTimeTaken = timer.innerText;
 
- // store final data
- finalR1.innerText = finalPassword1 || "Not cracked";
+ // ===== ROUND 1 SUMMARY (FIXED) =====
+ let correct = teams[teamSelect.value].word;
+ let formed = formedWordR1;
+
+ if(!formed){
+  finalR1.innerHTML = "<i>Not attempted</i>";
+ }else{
+  let matched = 0;
+  let unmatched = 0;
+  let visual = "";
+
+  for(let i = 0; i < correct.length; i++){
+   if(formed[i] === correct[i]){
+    matched++;
+    visual += `<span style="color:#22c55e;font-weight:700;">${formed[i]}</span> `;
+   }else{
+    unmatched++;
+    visual += `<span style="color:#ef4444;font-weight:700;">${formed[i] || "_"}</span> `;
+   }
+  }
+
+  finalR1.innerHTML = `
+   <div style="letter-spacing:4px;font-size:18px;">${visual}</div>
+   <div style="margin-top:8px;">
+    Matched Characters: <b style="color:#22c55e">${matched}</b> |
+    Unmatched Characters: <b style="color:#ef4444">${unmatched}</b>
+   </div>
+  `;
+ }
+
+ // ===== OTHER ROUNDS (UNCHANGED) =====
  finalR2.innerText = attempts;
  finalAttack.innerText = teams[attackSelect.value].name;
  finalDefend.innerText = defendSelect.value;
@@ -546,8 +623,20 @@ function submitRound3(){
 
  finalBox.style.display = "block";
 
- round3Log.innerText="Round 3 submitted. Timer stopped.";
+ round3Log.innerText = "Round 3 submitted. Timer stopped.";
  r3.classList.add("locked");
+}
+
+function countSequentialMatches(formed, correct){
+ let count = 0;
+ let len = Math.min(formed.length, correct.length);
+
+ for(let i = 0; i < len; i++){
+  if(formed[i] === correct[i]){
+   count++;
+  }
+ }
+ return count;
 }
 
 </script>
@@ -555,7 +644,10 @@ function submitRound3(){
 <section id="finalBox" style="display:none;">
  <h2>📊 Final Mission Summary</h2>
  <div class="box defence">
-  <p><b>Round 1 – Formed Word:</b> <span id="finalR1"></span></p>
+  <p><b>Round 1 – Character Match:</b></p>
+<div id="finalR1" class="r1-right"></div>
+
+
   <p><b>Round 2 – Attempts Taken:</b> <span id="finalR2"></span></p>
   <p><b>Round 3 – Attack Team:</b> <span id="finalAttack"></span></p>
   <p><b>Round 3 – Defend Team:</b> <span id="finalDefend"></span></p>
